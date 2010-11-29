@@ -1,0 +1,180 @@
+%\documentclass{sig-alternate}
+%  \pdfpagewidth=8.5truein
+%  \pdfpageheight=11truein
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+  \pdfpagewidth=8.5truein
+  \pdfpageheight=11truein
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+%\usepackage[unicode,pdftex,colorlinks]{hyperref}
+%\usepackage[all]{hypcap}
+\usepackage{cmap}
+\usepackage{tikz}
+\usetikzlibrary{petri}
+
+\newcommand{\enumhl}{\textit}
+\newcommand{\termhl}{\textit}
+\newtheorem{lemma}{Lemma}
+
+%two column float page must be 90% full
+\renewcommand\dblfloatpagefraction{.99}
+%two column top float can cover up to 80% of page
+\renewcommand\dbltopfraction{.99}
+%float page must be 90% full
+\renewcommand\floatpagefraction{.99}
+%top float can cover up to 80% of page
+\renewcommand\topfraction{.99}
+%bottom float can cover up to 80% of page
+\renewcommand\bottomfraction{.99}
+%at least 10% of a normal page must contain text
+\renewcommand\textfraction{.01}
+
+% Math-mode symbol & verbatim
+\def\W#1#2{$#1{#2}$ &\tt\string#1\string{#2\string}}
+\def\X#1{$#1$ &\tt\string#1}
+\def\Y#1{$\big#1$ &\tt\string#1}
+\def\Z#1{\tt\string#1}
+
+\begin{document}
+
+\title{WCET estimation for security-related
+network traffic analysis}
+
+\author{\IEEEauthorblockN{Ivan Zotov}
+\IEEEauthorblockA{Computer Systems Lab, Department of Computational Mathematics and Cybernetics, \\
+Moscow State University, Moscow, Russia \\
+Email: tridcatov@lvk.cs.msu.su}
+}
+
+
+\maketitle
+\begin{abstract}
+Further subsections may change their captions.
+\end{abstract}
+
+\begin{IEEEkeywords}
+WCET, AURA, speed, enhacements
+\end{IEEEkeywords}
+
+\section{Introduction}
+%TODO: general introduction into WCET
+Worst case execution time estimations form a subset of methods,
+which obtains cardinality bound of executing programs or algorithms. 
+Their key point is to get such a bound to perform various types of soft and hard realtime queueing.
+Such estimations are strictly required in case the program have to stop right in predictable time limits,
+for example in remote-controlled flight units or in unpiloted space crafts, 
+where there is a need in time-determined calculations and decisions.
+
+%TODO: Information security purposes of WCET
+The same problem is observed in information security.
+One has to process vast amount of traffic to detect or to prevent the attack that is directed from outside or data leak that is originated from inside of protected system.
+The perfomance of communication systems is increasing averagely 1.5 times faster than the perfomance of computing systems.
+There is a need to obtain the WCET estimations for components of observing or guarding programs to be sure not to be overflooded with overall traffic that is present in the system.
+
+For example, even the simplest intrusion prevention system is to filter all incoming traffic to locate the malicious code in data streams.
+If there is no predicatable time of single packet processing, than there is no guarantee that the work of the system won't be paralised by enormous amounts of data.
+Unknown processing time will result either in denial of service of the system or in possible security threat in case of discarding the check for some data.
+
+%TODO: AURA as it is
+Such problems arised in development of complex realtime intrusion prevention system, which uses proprietary language AURA (AUtomata for Recognition and Analysis) to describe application behaviour and event processing in terms of finit automats.
+
+Physicaly this system can be presented as a bunch of observing and reacting modules named sensors, which are installed on borderline and node machines in system being protected, and one or few databases, which contain compiled scenarios written in AURA language.
+
+Sensors are able to communicate with each other via mechanism of events. Events can be produced either as a reaction to activity not related to sensor itself or as a responce for another event. They are processed on the node by a bunch of trees, which represent current state of automatons copies in "ancestor - descendants" style.
+
+AURA automatons are described in terms of scenarios consisting of states and transitions between the states. Transitions are further divided to transition predicates and transition bodies. Each automaton has it's own context, which forms it's memory. Transitions may be declared as one of three types. Consuming transition will result in change of current context. Nonconsuming transition will result in generation of a new context similar to previous and in change of derived context leaving ancestor context unchanged. Finally, unwinding transition will invoke destruction of current context and all of his descendants.
+
+Combination of this transition types will result in composition of context trees. While processing the event this trees are traversed in depth recursion, where the oldest descendant has the priority to process the event. 
+ 
+\section{Related work}
+%TODO: Related works in AURA development.
+
+%TODO: Short overview of existing commercial tools and implemented methods.
+
+%TODO: Expanded overview of common source and bytecode analysises, if required.
+ 
+\section{Proposed method}
+
+\subsection{Principled scheme}
+%TODO: Describe the principled workflow of method in terms of orgraph.
+Proposed method is the implementation of synthtetic symbolic and control flow analysis with elements of runtime simulation.
+The first step is extraction of CFG (control flow graph) from source0 or bytecode of executing program.
+Bytecode is more preferable due to optimisations that compilers might cause on source. Bytecode presents optimised CFG that won't change and create time anomalies in program behaviour.
+
+The secod step is to determine infeasible paths in object code in terms of data infeasibility.
+Data infeasibility means that input data always forms a subset of data sets which are described by times multiplication of input types.
+This can result in infeasibility of exact subpasses of CFG.
+For example, if C-code {\slshape int a; ... if (a $>$ 0) then \{...\} else \{...\} } has a known bound for assignments that can be eprformed on integer variable a in range $a \in [1 .. 200]$,
+than it's rather obvious that "else" branch will be infeasible, because conditional expression will always have "true" value. 
+
+Due to this fact the next step will result in gathering information about all variables in program being examinated and determination of input variables.
+This is done via referring to symbolic tables of compiled bytecode or constructing such tables based on analysis of source code and observation of parametres of input instructions.
+After determining input variables there is a need to obtain bounds for input values of this variables.
+
+Then abstract interpretation begins, which allow to observe changes in variable's bounds.
+Abstract interpretation performs exact same instructions, that would be performed on variable at runtime, but instead works with variable's bounds.
+When abstract interpretation reaches conditional jump point, it detects, whether both of branches is feasible under current data set state.
+If one of the branch is infeasible, it's marked respectively.
+When branch is reported to be infeaseble on all data subsets (bounds may vary inside the loop, for example), it is excleuded from further analysis. 
+
+When all of infeasible branches were cut out, the resulted control flow orgraph is recurcively inspected for WCET estimations. 
+WCET of control flow subtree nested in certain basic block is assumed to be the sum of this block's individual calculation complexity and maximum of estimations for it's direct descendants.
+
+So far this results in recursive reduction of CFG while finding the Hamilton path in it. Such reduction can always be performed, because there is a finite number of pathes in graph representation of a well formed algorythm.
+%TODO: And maybe even cool pic.
+
+\subsection{LLVM-opt derived implementation}
+
+%TODO: Brief description of LLVM and its purposes.
+
+LLVM (Low Level Virtual Machine) is a set of tools to build, optimise and interpret platform-indepent code. LLVM posesses many frontends to be bound with general compilers to produce abstract bytecode from a given programming language. LLVM also has it's own assembler language for abstract CISC processor. Translated LLVM object files may either be compiled under target architecture with apropriately configured LLVM-backend or they can be interpreted using embedded jitter.
+
+LLVM can perform various modular optimisations on the given code with a set of filters or paths. Common pathes include dead code elimination or loop extensions, though they may perform activities far from optimisation such as CFG compilation into viewable form.
+
+%TODO: And of purposes of AURA using LLVM.
+Described experimental IPS uses LLVM bytecode to store it's scenarios. That is done because of compatibilty issues. Nodes in protected system can be operated by different operating systems and principaly different hardware platforms. Because of large number of LLVM-backends for most common combination of hardware and operating systems, it's much easier to provide each node with such a jitter-backend.
+
+Another point to use it is a little time required to compile the scenario, because there is no need to recompile it to perform it's processing under different workstations and small data storage, because there's no need to hold many copies of recompilated scenario. So there is an opportunity to maintain single database of scenarios through all protected system.
+Sensor is able to load up scenarios files from local file system or from remote databases.
+
+%TODO: Implementation details (Like data flow and analysers paths).
+
+WCET analyser is implemented as module of LLVM native optimiser. This implementation model was preferable on the reason of easy embedding into compilation toolchain. Target module is inserted into toolchain with lowest priority, which means it will only start it's work after all optimisations to the target code will be made and no further code modifications will appear. Although this can change in native bytecode compilaton of scenarios, common backends don't perform optimisations on translation.
+
+AURA scenario's parts are translated into different LLVM-functions, which purposes can be completely objected from there suffixes. Main purpose of analysis is to determine WCET estimations of transition predicates and bodies, as they are the main calculation task while performing event processing.
+
+As the first analysis step analyser buildes global symbolic table consisting of symbolic name, object module address and range of possible values. In case there is a static assignment for a variable, then range is set directly to the defined variable. Whether the variable is to be assigned in runtime through read procedures or by input values, the range is requested from operator.
+  
+Analyser then takes entry points of functions that represent different transitions of given scenarios and build local symbolic tables which are global table supplemented with local variables. Ranges are assigned in the same way as in global table. Such supplementation is traversed in each contro flaw branching point.
+
+
+%TODO: Yet another cool pic about data flow.
+
+\section{Experiments}
+
+\subsection{WCET estimations for acyclic and arecursive programms}
+
+%TODO: Some information of the experiments made.
+
+%TODO: Pseudo-code of trivial AURA scenario and estimations made for it.
+
+%TODO: LLVM pseudo-code required due to selected metric.
+
+\subsection{Current limitations}
+
+%TODO: Description of current limitations (like those in previous caption).
+
+%TODO: Limitation avoidance in future development.
+
+\section{Conclusion}
+
+%TODO: Short summary on discussed subjects. Inluding the developed method, it's implementations and perspectives.
+
+\bibliographystyle{abbrv}
+\begin{thebibliography}{99}
+\bibitem{stub}Stub
+\end{thebibliography}
+
+
+\end{document}
