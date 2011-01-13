@@ -1,0 +1,84 @@
+%\documentclass{sig-alternate}
+%  \pdfpagewidth=8.5truein
+%  \pdfpageheight=11truein
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+  \pdfpagewidth=8.5truein
+  \pdfpageheight=11truein
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[unicode,pdftex,colorlinks]{hyperref}
+%\usepackage[all]{hypcap}
+\usepackage{cmap}
+\usepackage{tikz}
+\usetikzlibrary{petri}
+
+\newcommand{\enumhl}{\textit}
+\newcommand{\termhl}{\textit}
+\newtheorem{lemma}{Lemma}
+
+%two column float page must be 90% full
+\renewcommand\dblfloatpagefraction{.99}
+%two column top float can cover up to 80% of page
+\renewcommand\dbltopfraction{.99}
+%float page must be 90% full
+\renewcommand\floatpagefraction{.99}
+%top float can cover up to 80% of page
+\renewcommand\topfraction{.99}
+%bottom float can cover up to 80% of page
+\renewcommand\bottomfraction{.99}
+%at least 10% of a normal page must contain text
+\renewcommand\textfraction{.01}
+
+% Math-mode symbol & verbatim
+\def\W#1#2{$#1{#2}$ &\tt\string#1\string{#2\string}}
+\def\X#1{$#1$ &\tt\string#1}
+\def\Y#1{$\big#1$ &\tt\string#1}
+\def\Z#1{\tt\string#1}
+
+\begin{document}
+
+\title{
+}
+
+\author{\IEEEauthorblockN{Ivan Zotov}
+\IEEEauthorblockA{Computer Systems Lab, Department \\
+    of Computational Mathematics and Cybernetics, \\
+Moscow State University, Moscow, Russia \\
+Email: tridcatov@lvk.cs.msu.su}
+}
+
+
+\maketitle
+\begin{abstract}
+This work describes concepts and realisation details of domain specific
+language AURA.
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+AURA, automata, parallel runtime, concurrency, loadbalancing
+\end{IEEEkeywords}
+
+\section{Introduction}
+%TODO: High-load traffic analysis
+%TODO: AURA consepts and application in HLTA
+%TODO: Parallel traffic analysis in DCS
+
+\section{Related work}
+%TODO: Maybe smth about other traffic analysis tool
+\section{Proposed method}
+\subsection{Principled scheme}
+\subsection{LLVM-opt derived implementation}
+\section{Experiments}
+\subsection{WCET estimations for acyclic and arecursive programms}
+\subsection{Current limitations}
+\section{Conclusion}
+
+\bibliographystyle{abbrv}
+\begin{thebibliography}{99}
+\bibitem{stub}Stub
+\end{thebibliography}
+
+
+\end{document}
