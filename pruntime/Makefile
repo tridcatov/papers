@@ -1,5 +1,8 @@
-all: text.pdf
-text.pdf: source.tex
-	pdflatex -jobname text source.tex
+all: source.pdf
+source.pdf: source.tex related.tex
+	pdflatex source.tex
+	bibtex source.aux
+	pdflatex source.tex
+	pdflatex source.tex
 clean:
-	rm *.log *.aux *.out
+	rm *.log *.aux *.out source.pdf
