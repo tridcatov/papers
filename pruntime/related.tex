@@ -1,1 +1,52 @@
-Here there be related
+% There is a strict need to replace "brandname" for what we really want to describe.
+% Like AURA or "Target-parallel-trafficanalysis-framework-whatsoever"
+
+% Perhaps, it would be better to group related languages/grameworks by targets, eliminating subsectioning
+
+Our work implements multithreaded network traffic and system behavior analysis. It is done using scalable multiprocess engine and domain-specific language. With all above, our work is related with followng.
+
+\subsection{Erlang}
+Erlang is a multiparadigm language, which was originally developed as distributed programming language for soft realtime systems. Process interaction is implemented as message passing, eliminating the need for locks. Erlang's processes are close in implementation to OS threads, although they lack any memory sharing. These features allows to conclude, thar erlang implements event oriented workflow.
+
+brandname uses lock-free multithreaded event processing scheme as well. Events and related information are passed via lock-free message pipes in shared memory.
+
+\subsection{NESL}
+
+NESL is a parallel programming language, that is agregating various ideas from parallel, array and functional programming. Programms in NESL resemble high-level pseudocode. Concurrency in NESL is implemented via data parallelism. NESL is purely suitable for traffic analysis problems due to low expressivenes of language, lacking complex data structures support.
+
+% Really don't know, how we might use reference to this. Nothing in common with our cute little AURA.
+% First extraction candidate
+
+\subsection{Oz}
+
+Oz is programming educational multiparadigm language. It's able to succesfully implement transparent distributed programming model via implicit declaration of lightweight thread entities. Oz also has an interface with C/C++ libraries. 
+
+brandname's runtime system allows transparent multithreaded processing of events. It also implements language interface with C/C++ libraries.
+
+\subsection{Occam}
+
+Occam is imperative language for parallel transputer architecture. It implements process interaction via randevu points.
+
+brandname runtime system scedules event processing with lock-free messaging using rather similar message queueing.
+
+\subsection{STATL}
+
+STATL is automata oriented language for event processing in STAT system. Scenario in STATL describes single automata, that works on some alphabet of events. Automatas are able to reproduce themselves, derived copy posesses changed state.
+
+brandname domain specific language AURA is very similar to STATL, allowing programmer to define alphabets of events and automatas. Inheritance model is also present.
+
+\subsection{Esterel}
+
+Esterel is a synchronous programming language, designed to create complex reactive systems, that are able to run in realtime due to hardware semantics of language. However, esterel lacks flexibility because of predefined number of automatas working. 
+
+brandname runtime system supports aynchronous message delivery and is not supporting restricions of realtime processing. Automatas spawning in runtime allows more flexible approach to programming, allowing, for example, easy-coded session following.
+
+\subsection{VESPA}
+
+There is no information of VESPA system in uptime internets. So sad.
+
+\subsection{Bro IDS}
+
+Bro IDS implements single threaded event trace analysis. Scenarios are able to communicate via global variables. Each variable may be declared persistent, causing runtime to save it's state between system runs. Bro language is interpreted scenario event-oriented language.
+
+brandname native language is much the same event-oriented language like bro language. Scenarios in AURA are compiled to target platform-specific code. Runtime system allows to emulate and implement persistent variables, yet event passing is more natural way to do scenario's interconnections.
